@@ -17,6 +17,20 @@ body
     left: 0;
     outline: none;
 }
+
+p{
+    color: rgb(178, 156, 156);
+    position: absolute;
+    font-family:monospace ;
+    z-index: 3;
+    font-size: 30px;
+    text-align: center;
+    font-weight: bold;
+    top: 50px;
+    transform: translateX(-50%);
+    left: 50%;
+}
+
 #button {
     
     --glow-color: rgba(255, 255, 255, 0.400); /* Mantén un brillo blanco suave */
@@ -28,6 +42,7 @@ body
     border: .25em solid var(--glow-color);
     padding: 1em 3em;
     color: black;
+    display: block;
     font-size: 15px;
     font-weight: bold;
     background-color: var(--btn-color);
@@ -40,6 +55,8 @@ body
     position: absolute;
     top: 500px;
     left: 50%;
+    transition: opacity 1s; /* Opacity transition for fade in */
+    opacity: 1; /* Start visible */
     transform: translateX(-50%);
     transition: all 0.3s;
    }
@@ -77,3 +94,11 @@ body
     padding: 12px 50px;
   }
 }
+
+@media (max-width: 768px) {
+    #button {
+        top: 800px;
+        left: 290px;
+    }
+  }
+  

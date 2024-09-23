@@ -17,25 +17,37 @@ const debugObject = {}
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
 const btn = document.getElementById("button");
-
+const p = document.getElementById("movement")
 // Añadir el evento click para ejecutar el morph de la posición 0 a la 2
 btn.addEventListener('click', () => {
+    btn.style.display = "block" ?  btn.style.display = "none" : btn.style.display = "block" 
     animateMorph();
 });
 
 function animateMorph() {
-
+    setTimeout(() => {
+        btn.style.display = "block"; // Ensure button is visible
+        btn.style.opacity = 0; // Start from transparent
+        // Trigger reflow to apply the transition
+        btn.offsetHeight; // This forces a reflow
+        btn.style.transition = "opacity 0.5s"; // Set transition for opacity
+        btn.style.opacity = 1; // Fade in the button
+        btn.textContent = "Restart"; // Change button text to "Restart"
+       particles.morph(0);  // Cambiar a posición 2
+     
+   }, 7000);  
 
     if (particles) {
         // Cambia de la posición actual a la posición 0
  
         // Cambia a la posición 1 después de 3 segundos
-            particles.morph(2);  // Cambiar a posición 1
+          
       // 3000ms = 3 segundos (duración de la animación de GSAP)
-
+      particles.morph(1); 
         // Cambia a la posición 2 después de 6 segundos
         setTimeout(() => {
-            particles.morph(0);  // Cambiar a posición 2
+             // Cambiar a posición 1
+            particles.morph(2);  // Cambiar a posición 2
         }, 3000);  // 6000ms = 6 segundos, para que comience después de la segunda animación
     
        
@@ -60,6 +72,21 @@ const sizes = {
     pixelRatio: Math.min(window.devicePixelRatio, 2)
 }
 
+
+// Función para ajustar la cámara según el tamaño de la ventana
+const adjustCameraPosition = () => {
+    
+    console.log(window.innerWidth)
+    if (window.innerWidth < 700) {
+          p.textContent = "Move with your finger and expand"
+        camera.position.set(0, 0, 28 * 2);
+    } else {
+               p.textContent = "Move with your mouse and scroll "
+        camera.position.set(0, 0, 8 * 2); // Posición original para pantallas más grandes
+    }
+};
+
+
 window.addEventListener('resize', () => {
     // Update sizes
     sizes.width = window.innerWidth
@@ -72,6 +99,10 @@ window.addEventListener('resize', () => {
 
     // Update camera
     camera.aspect = sizes.width / sizes.height
+
+    adjustCameraPosition()
+  
+   
     camera.updateProjectionMatrix()
 
     // Update renderer
@@ -84,7 +115,7 @@ window.addEventListener('resize', () => {
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(35, sizes.width / sizes.height, 0.1, 100)
-camera.position.set(0, 0, 8 * 2)
+camera.position.set(0, 0, 30)
 scene.add(camera)
 
 // Controls
@@ -113,13 +144,15 @@ let particles = null
 
 gltfLoader.load('./final.glb', (gltf) => {
     particles = {}
-    particles.index = 1
+    particles.index = 0
 
+   
     // Positions
     const positions = gltf.scene.children.map(child => {
         console.log(child)
         return child.geometry.attributes.position
     })
+
 
     console.log(positions)
     particles.maxCount = 0
