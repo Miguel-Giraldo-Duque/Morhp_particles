@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
-import GUI from 'lil-gui'
+// import GUI from 'lil-gui'  // Descomentar para usar el GUI de depuración
 import gsap from 'gsap'
 import particlesVertexShader from './shaders/particles/vertex.glsl'
 import particlesFragmentShader from './shaders/particles/fragment.glsl'
@@ -11,7 +11,7 @@ import particlesFragmentShader from './shaders/particles/fragment.glsl'
  * Base
  */
 // Debug
-const gui = new GUI({ width: 340 })
+// const gui = new GUI({ width: 340 })  // Descomentar si usas el GUI
 const debugObject = {}
 
 // Canvas
@@ -22,20 +22,23 @@ const btn = document.getElementById("button");
 btn.addEventListener('click', () => {
     animateMorph();
 });
+
 function animateMorph() {
+
+
     if (particles) {
         // Cambia de la posición actual a la posición 0
-        particles.morph(1);  // Cambiar a posición 0
-
+ 
         // Cambia a la posición 1 después de 3 segundos
-        setTimeout(() => {
             particles.morph(2);  // Cambiar a posición 1
-        }, 3000);  // 3000ms = 3 segundos (duración de la animación de GSAP)
+      // 3000ms = 3 segundos (duración de la animación de GSAP)
 
         // Cambia a la posición 2 después de 6 segundos
         setTimeout(() => {
             particles.morph(0);  // Cambiar a posición 2
-        }, 6000);  // 6000ms = 6 segundos, para que comience después de la segunda animación
+        }, 3000);  // 6000ms = 6 segundos, para que comience después de la segunda animación
+    
+       
     }
 }
 
@@ -57,8 +60,7 @@ const sizes = {
     pixelRatio: Math.min(window.devicePixelRatio, 2)
 }
 
-window.addEventListener('resize', () =>
-{
+window.addEventListener('resize', () => {
     // Update sizes
     sizes.width = window.innerWidth
     sizes.height = window.innerHeight
@@ -100,8 +102,8 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(sizes.pixelRatio)
 
-debugObject.clearColor = '#160920'
-gui.addColor(debugObject, 'clearColor').onChange(() => { renderer.setClearColor(debugObject.clearColor) })
+debugObject.clearColor = '#000000'  // Color predeterminado de la escena: negro
+// gui.addColor(debugObject, 'clearColor').onChange(() => { renderer.setClearColor(debugObject.clearColor) })  // Descomentar si usas el GUI
 renderer.setClearColor(debugObject.clearColor)
 
 /**
@@ -109,44 +111,36 @@ renderer.setClearColor(debugObject.clearColor)
  */
 let particles = null
 
-gltfLoader.load('./final.glb', (gltf) =>
-{
+gltfLoader.load('./final.glb', (gltf) => {
     particles = {}
     particles.index = 1
 
     // Positions
-    const positions = gltf.scene.children.map(child =>{
-
+    const positions = gltf.scene.children.map(child => {
         console.log(child)
         return child.geometry.attributes.position
     })
 
     console.log(positions)
     particles.maxCount = 0
-    for(const position of positions)
-    {
+    for(const position of positions) {
         if(position.count > particles.maxCount)
             particles.maxCount = position.count
     }
 
     particles.positions = []
-    for(const position of positions)
-    {
+    for(const position of positions) {
         const originalArray = position.array
         const newArray = new Float32Array(particles.maxCount * 3)
 
-        for(let i = 0; i < particles.maxCount; i++)
-        {
+        for(let i = 0; i < particles.maxCount; i++) {
             const i3 = i * 3
 
-            if(i3 < originalArray.length)
-            {
+            if(i3 < originalArray.length) {
                 newArray[i3 + 0] = originalArray[i3 + 0]
                 newArray[i3 + 1] = originalArray[i3 + 1]
                 newArray[i3 + 2] = originalArray[i3 + 2]
-            }
-            else
-            {
+            } else {
                 const randomIndex = Math.floor(position.count * Math.random()) * 3
                 newArray[i3 + 0] = originalArray[randomIndex + 0]
                 newArray[i3 + 1] = originalArray[randomIndex + 1]
@@ -170,14 +164,13 @@ gltfLoader.load('./final.glb', (gltf) =>
 
 
     // Material
-    particles.colorA = '#ff7300'
-    particles.colorB = '#0091ff'
+    particles.colorA = '#000000'  // Color A: negro
+    particles.colorB = '#21452a'  // Color B: verde oscuro
 
     particles.material = new THREE.ShaderMaterial({
         vertexShader: particlesVertexShader,
         fragmentShader: particlesFragmentShader,
-        uniforms:
-        {
+        uniforms: {
             uSize: new THREE.Uniform(0.4),
             uResolution: new THREE.Uniform(new THREE.Vector2(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio)),
             uProgress: new THREE.Uniform(0),
@@ -194,8 +187,7 @@ gltfLoader.load('./final.glb', (gltf) =>
     scene.add(particles.points)
 
     // Methods
-    particles.morph = (index) =>
-    {
+    particles.morph = (index) => {
         // Update attributes
         particles.geometry.attributes.position = particles.positions[particles.index]
         particles.geometry.attributes.aPositionTarget = particles.positions[index]
@@ -212,26 +204,23 @@ gltfLoader.load('./final.glb', (gltf) =>
     }
 
     // Tweaks
-    gui.addColor(particles, 'colorA').onChange(() => { particles.material.uniforms.uColorA.value.set(particles.colorA) })
-    gui.addColor(particles, 'colorB').onChange(() => { particles.material.uniforms.uColorB.value.set(particles.colorB) })
-    gui.add(particles.material.uniforms.uProgress, 'value').min(0).max(1).step(0.001).name('uProgress').listen()
+    // gui.addColor(particles, 'colorA').onChange(() => { particles.material.uniforms.uColorA.value.set(particles.colorA) })  // Descomentar si usas el GUI
+    // gui.addColor(particles, 'colorB').onChange(() => { particles.material.uniforms.uColorB.value.set(particles.colorB) })  // Descomentar si usas el GUI
+    // gui.add(particles.material.uniforms.uProgress, 'value').min(0).max(1).step(0.001).name('uProgress').listen()  // Descomentar si usas el GUI
 
     particles.morph0 = () => { particles.morph(0) }
     particles.morph1 = () => { particles.morph(1) }
     particles.morph2 = () => { particles.morph(2) }
     
-
-    gui.add(particles, 'morph0')
-    gui.add(particles, 'morph1')
-    gui.add(particles, 'morph2')
-
+    // gui.add(particles, 'morph0')  // Descomentar si usas el GUI
+    // gui.add(particles, 'morph1')  // Descomentar si usas el GUI
+    // gui.add(particles, 'morph2')  // Descomentar si usas el GUI
 })
 
 /**
  * Animate
  */
-const tick = () =>
-{
+const tick = () => {
     // Update controls
     controls.update()
 
