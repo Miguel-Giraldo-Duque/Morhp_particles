@@ -113,14 +113,6 @@ camera.position.set(0, 0, 30)
 scene.add(camera)
 
 
-if (window.innerWidth < 700) {
-    p.textContent = "Move with your finger and expand"
-  camera.position.set(0, 0, 28 * 2);
-} else {
-    p.textContent = "Move with your mouse and scroll "
-camera.position.set(0, 0, 8 * 3); // Posición original para pantallas más grandes
-}
-
 // Controls
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
