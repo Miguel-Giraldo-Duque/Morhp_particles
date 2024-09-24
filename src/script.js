@@ -76,9 +76,9 @@ const sizes = {
 // Función para ajustar la cámara según el tamaño de la ventana
 const adjustCameraPosition = () => {
  if (window.innerWidth < 700) {
-          p.textContent = "Move with your finger and expand"
+ 
         camera.position.set(0, 0, 28 * 2);
-    } 
+    }   
 };
 
 window.addEventListener('resize', () => {
