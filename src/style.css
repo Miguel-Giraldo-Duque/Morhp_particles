@@ -97,8 +97,8 @@ p{
 
 @media (max-width: 768px) {
     #button {
-        top: 800px;
-        left: 290px;
+        top: 500px;
+        left: 50%;
     }
   }
   
